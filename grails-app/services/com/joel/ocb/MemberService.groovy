@@ -6,6 +6,7 @@ class MemberService {
 
     def save(GrailsParameterMap params) {
         Member member = new Member(params)
+        member.lastUpdate = new Date();
         def response = AppUtil.saveResponse(false, member)
         if (member.validate()) {
             member.save(flush: true)
