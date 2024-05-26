@@ -9,7 +9,7 @@
 *
 *= require bootstrap
 *= require style
-*= require fontawesome/css/all.css
+*= require fontawesome/css/all.cssf
 *= require jquery-confirm.min
 *= require_self
 */
