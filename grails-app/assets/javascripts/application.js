@@ -12,4 +12,5 @@
 //= require ocb
 //= require ocb.init
 //= require ocb.message.box
+//= require ocb.ajax
 //= require_self
