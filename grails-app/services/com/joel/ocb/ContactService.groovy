@@ -65,6 +65,13 @@ class ContactService {
 
     def delete(Contact contact) {
         try {
+            if (contact.image) {
+                println("Tendando excluir a imagem do contato: ${contact.image}")
+                boolean imageDeleted = FileUtil.deleteContactImage(contact.image, contact.id)
+                if (!imageDeleted) {
+                    println("falha ao deletar imagem: ${contact.image}")
+                }
+            }
             contact.delete(flush: true)
         } catch (Exception e) {
             println(e.getMessage())
@@ -82,4 +89,5 @@ class ContactService {
             }
         }
     }
+
 }
