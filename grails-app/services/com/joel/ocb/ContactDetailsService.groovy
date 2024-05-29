@@ -15,65 +15,50 @@ class ContactDetailsService {
                 contact: contact,
         ]
 
+        // Verificar e definir o ID
         if (id == null && params.detailsId) {
             map.id = params.detailsId
         } else if (id != null) {
             try {
-                if (params["detailsId"][id]) {
+                if (params["detailsId"]?.getAt(id)) {
                     map.id = params["detailsId"][id]
                 }
             } catch (Exception e) {
+                // Optionally log the exception here
             }
         }
 
-        if (id == null && params.mobile) {
-            map.mobile = params.mobile
-        } else if (id != null && params["mobile"][id]) {
-            map.mobile = params["mobile"][id]
+        // Preencher outros campos somente se o ID estiver presente
+
+        def keys = ['mobile', 'phone', 'email', 'website', 'address', 'type']
+
+        keys.each { key ->
+            if (id == null && params[key]?.getAt(id)) {
+                map[key] = params[key]?: ""
+            } else if (id != null) {
+                try {
+                    if (params[key]?.getAt(id)) {
+                        map[key] = params[key]?.getAt(id)?:""
+                    }
+                } catch (Exception e) {
+                    // Optionally log the exception here
+                }
+            }
         }
 
-        if (id == null && params.phone) {
-            map.phone = params.phone
-        } else if (id != null && params["phone"][id]) {
-            map.phone = params["phone"][id]
-        }
 
-        if (id == null && params.email) {
-            map.email = params.email
-        } else if (id != null && params["email"][id]) {
-            map.email = params["email"][id]
-        }
-
-        if (id == null && params.website) {
-            map.website = params.website
-        } else if (id != null && params["website"][id]) {
-            map.website = params["website"][id]
-        }
-
-        if (id == null && params.address) {
-            map.address = params.address
-        } else if (id != null && params["address"][id]) {
-            map.address = params["address"][id]
-        }
-
-        if (id == null && params.type) {
-            map.type = params.type
-        } else if (id != null && params["type"][id]) {
-            map.type = params["type"][id]
-        }
-
-        map.contact = contact
         return map
     }
 
     private def saveOrUpdate(def map) {
-        ContactDetails contactDetails
         if (map && map.id) {
+            ContactDetails contactDetails
             contactDetails = getById(map.id) ?: new ContactDetails()
             contactDetails.properties = map
             contactDetails.save(flush: true)
         } else {
-            if(map?.mobile || map?.phone || map?.email || map?.website || map?.address){
+            if (map?.mobile || map?.phone || map?.email || map?.website || map?.address) {
+                ContactDetails contactDetails
                 contactDetails = new ContactDetails(map)
                 contactDetails.save(flush: true)
             }
@@ -82,15 +67,17 @@ class ContactDetailsService {
 
 
     def createOrUpdateDetails(Contact contact, def params) {
-        if (!(params.mobile == "" && params.phone == "" && params.email == "" && params.website== ""  && params.address == "")) {
-            if (params.type instanceof String) {
+
+        if (params.type instanceof String) {
+            if (!(params.mobile == "" && params.phone == "" && params.email == "" && params.website == "" && params.address == "")) {
                 saveOrUpdate(getContactDetailsParamsParse(contact, params))
-            } else if (params.type && params.type.getClass().isArray()) {
-                Integer index = 0
-                params.type.each {
-                    saveOrUpdate(getContactDetailsParamsParse(contact, params, index))
-                    index++
-                }
+            }
+
+        } else if (params.type && params.type.getClass().isArray()) {
+            Integer index = 0
+            params.type.each {
+                saveOrUpdate(getContactDetailsParamsParse(contact, params, index))
+                index++
             }
         }
     }
@@ -117,4 +104,5 @@ class ContactDetailsService {
         }
         return []
     }
+
 }
