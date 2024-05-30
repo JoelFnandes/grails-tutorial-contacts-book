@@ -98,20 +98,14 @@ environments:
     development:
         dataSource:
             dbCreate: update
-            username: root
-            password: ""
             url: jdbc:mysql://localhost:3306/ocb
     test:
         dataSource:
             dbCreate: update
-            username: root
-            password: ""
             url: jdbc:mysql://localhost:3306/ocb
     production:
         dataSource:
             dbCreate: update
-            username: root
-            password: ""
             url: jdbc:mysql://localhost:3306/ocb
             properties:
                 jmxEnabled: true
