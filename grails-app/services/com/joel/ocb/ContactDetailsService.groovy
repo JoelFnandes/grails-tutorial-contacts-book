@@ -33,7 +33,7 @@ class ContactDetailsService {
         def keys = ['mobile', 'phone', 'email', 'website', 'address', 'type']
 
         keys.each { key ->
-            if (id == null && params[key]?.getAt(id)) {
+            if (id == null && params[key]) {
                 map[key] = params[key]?: ""
             } else if (id != null) {
                 try {
